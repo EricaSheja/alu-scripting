@@ -11,13 +11,11 @@ import requests
 def top_ten(subreddit):
     """Print top 10 hot post titles of a subreddit."""
     url = "https://api.reddit.com/r/{}/hot".format(subreddit)
-    headers = {"User-Agent": "alu-scripting-app"}
-    params = {"limit": 10}
+    headers = {"User-Agent": "alu-scripting"}
 
     response = requests.get(
         url,
         headers=headers,
-        params=params,
         allow_redirects=False
     )
 
@@ -25,11 +23,15 @@ def top_ten(subreddit):
         print("None")
         return
 
-    posts = response.json().get("data").get("children")
-
-    if not posts:
+    try:
+        posts = response.json().get("data").get("children")
+    except Exception:
         print("None")
         return
 
-    for post in posts:
+    if posts is None:
+        print("None")
+        return
+
+    for post in posts[:10]:
         print(post.get("data").get("title"))
